@@ -1,7 +1,6 @@
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 Plug 'AndrewRadev/sideways.vim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'jpalardy/vim-slime'
 Plug 'mhinz/vim-signify'
 Plug 'rakr/vim-one'
@@ -11,8 +10,12 @@ Plug 'connorholyday/vim-snazzy'
 Plug 'dracula/vim'
 Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
+Plug 'ray-x/lsp_signature.nvim'
+" Plug 'junegunn/fzf'
+" Plug 'junegunn/fzf.vim'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'junegunn/seoul256.vim'
 Plug 'tomtom/tcomment_vim'
 Plug 'tomtom/tlib_vim'
@@ -37,6 +40,8 @@ Plug 'fladson/vim-kitty'
 Plug 'liuchengxu/vista.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'projekt0n/github-nvim-theme'
+Plug 'ionide/Ionide-vim'
+
 call plug#end()
 
 
@@ -96,6 +101,10 @@ xnoremap ga <Plug>(EasyAlign)
 nnoremap ga <Plug>(EasyAlign)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
+" Terminal
+tnoremap jk <C-\><C-n>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
 " Quickfix
 
 function! ToggleQuickFix()
@@ -113,25 +122,43 @@ nnoremap <silent> <SPACE>qh :cc<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Fuzzy Finder
 
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-endfunction
+" function! RipgrepFzf(query, fullscreen)
+"   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+"   let initial_command = printf(command_fmt, shellescape(a:query))
+"   let reload_command = printf(command_fmt, '{q}')
+"   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+"   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+" endfunction
+"
+" command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+" nnoremap <SPACE>. :Files<CR>
+"
+" nnoremap <SPACE>f <nop>
+" nnoremap <SPACE>h <nop>
+"
+" nnoremap <SPACE>ff :GitFiles<CR>
+" nnoremap <SPACE>fh :History<CR>
+" nnoremap <SPACE>fg :RG<CR>
+" nnoremap <SPACE>hh :Helptags<CR>
+" nnoremap <SPACE>b :Bufferes<CR>
 
-command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
-nnoremap <SPACE>. :Files<CR>
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Telescope (Slower but prettier than FZF)
 
 nnoremap <SPACE>f <nop>
-nnoremap <SPACE>h <nop>
+nnoremap <SPACE>. <cmd>Telescope find_files<cr>
 
-nnoremap <SPACE>ff :GitFiles<CR>
-nnoremap <SPACE>fh :History<CR>
-nnoremap <SPACE>fg :RG<CR>
-nnoremap <SPACE>hh :Helptags<CR>
-nnoremap <SPACE>b :Bufferes<CR>
+" Find files using Telescope command-line sugar.
+nnoremap <SPACE>ff <cmd>Telescope find_files<cr>
+nnoremap <SPACE>fg <cmd>Telescope live_grep<cr>
+nnoremap <SPACE>fb <cmd>Telescope buffers<cr>
+nnoremap <SPACE>fh <cmd>Telescope help_tags<cr>
+
+" Using Lua functions
+nnoremap <SPACE>fh <cmd>lua require('telescope.builtin').oldfiles()<cr>
+nnoremap <SPACE>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <SPACE>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <SPACE>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " traces
@@ -140,9 +167,10 @@ let g:traces_abolish_integration = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Slime
 let g:slime_python_ipython = 1
-let g:slime_target = "kitty"
+let g:slime_target = "neovim"
 
 nnoremap <C-c>j :SlimeSendCurrentLine<CR>j
+nnoremap <C-c>} <C-c><C-c>}
 nnoremap <C-c>i gg/import<C-c><C-c>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -229,16 +257,22 @@ inoremap <silent><expr>  <up>  coc#util#has_float() ? FloatScroll(0) :  "\<up>"
 
 nnoremap <C-L> :%s/
 
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Completion, COQ
+
+let g:coq_settings = { 'auto_start': 'shut-up' }
+
 lua << EOF
+
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "javascript", "vue", "rust", "python" },
+  ensure_installed = { "c", "lua", "rust", "javascript", "python", "typescript" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
 
   -- List of parsers to ignore installing (for "all")
-  ignore_install = { "javascript" },
+  ignore_install = {},
 
   highlight = {
     -- `false` will disable the whole extension
@@ -248,7 +282,7 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = { },
+    -- disable = { "c", "rust" },
 
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -257,4 +291,5 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
 EOF
