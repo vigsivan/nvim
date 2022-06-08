@@ -17,7 +17,10 @@ Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'junegunn/seoul256.vim'
-Plug 'tomtom/tcomment_vim'
+" Plug 'tomtom/tcomment_vim'
+" Plug 'tpope/vim-commentary'
+" Plug 'JoosepAlviste/nvim-ts-context-commentstring'
+Plug 'numToStr/Comment.nvim'
 Plug 'tomtom/tlib_vim'
 Plug 'markonm/traces.vim'
 Plug 'tpope/vim-abolish'
@@ -102,7 +105,7 @@ nnoremap ga <Plug>(EasyAlign)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Terminal
-tnoremap jk <C-\><C-n>
+tnoremap <ESC> <C-\><C-n>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Quickfix
@@ -258,15 +261,30 @@ inoremap <silent><expr>  <up>  coc#util#has_float() ? FloatScroll(0) :  "\<up>"
 nnoremap <C-L> :%s/
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
-" Completion, COQ
-
-let g:coq_settings = { 'auto_start': 'shut-up' }
+" Configure Lua plugins
 
 lua << EOF
 
+require('Comment').setup()
+
+-- Telescope
+
+local actions = require("telescope.actions")
+
+require("telescope").setup({
+    defaults = {
+        mappings = {
+            i = {
+                ["<esc>"] = actions.close,
+            },
+        },
+    },
+})
+
+-- Treesitter
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "lua", "rust", "javascript", "python", "typescript" },
+  ensure_installed = { "c", "lua", "rust", "javascript", "python", "typescript", "vue", "css" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
