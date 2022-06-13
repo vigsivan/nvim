@@ -1,0 +1,5 @@
+{
+    "diagnostic.virtualTextCurrentLineOnly": false,
+    "diagnostic.enableSign": false,
+    "diagnostic.virtualText": true
+}

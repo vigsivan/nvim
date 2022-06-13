@@ -2,7 +2,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'jpalardy/vim-slime'
-Plug 'mhinz/vim-signify'
+" Plug 'mhinz/vim-signify'
+Plug 'lewis6991/gitsigns.nvim'
 Plug 'rakr/vim-one'
 Plug 'romainl/Apprentice'
 Plug 'morhetz/gruvbox'
@@ -14,9 +15,11 @@ Plug 'ray-x/lsp_signature.nvim'
 " Plug 'junegunn/fzf'
 " Plug 'junegunn/fzf.vim'
 Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'junegunn/seoul256.vim'
+" Plug 'wellle/context.vim'
 " Plug 'tomtom/tcomment_vim'
 " Plug 'tpope/vim-commentary'
 " Plug 'JoosepAlviste/nvim-ts-context-commentstring'
@@ -76,12 +79,13 @@ set nobackup                   " Don't create backups of files that are being ed
 set nowritebackup              " Same as above
 set confirm                    " Ask before performing destructive operations
 set ch=2                       " Increase height of command
-set ls=2                       " Always have status line
+set ls=2                       " Always have status line (use universal status line)
 set termguicolors              " Needed to make the colorschemes work
 set undofile                   " Persistent undo
 set cmdheight=2                " More space for displaying messages
 set updatetime=300             " decrease lag
 set shortmess+=c               "Don't pass messages to |ins-completion-menu|. 
+set signcolumn=yes             " Always show the sign column (avoids jarring effect)
 
 " A good set of defaults for all languages
 set expandtab shiftwidth=4 tabstop=4 softtabstop=4
@@ -91,9 +95,12 @@ set bg=light
 hi MatchParen ctermbg=blue guibg=lightblue
 
 let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
-nnoremap <SPACE> <nop>
-let mapleader = ","
+" nnoremap <SPACE> <nop>
+let mapleader="<SPACE>"
 let $RTP='/Users/vigsivan/.config/vim/.vim/' " Set vim config path
+" let g:context_enabled = 1
+let g:do_filetype_lua = 1  " Detect filetype in Lua
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Easy Align
@@ -121,6 +128,12 @@ endfunction
 nnoremap <silent> <SPACE>q <nop>
 nnoremap <silent> <SPACE>qq :call ToggleQuickFix()<cr>
 nnoremap <silent> <SPACE>qh :cc<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Version Control
+
+nnoremap <silent> <SPACE>g <nop>
+" nnoremap <silent> <SPACE>gs :SignifyToggle<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Fuzzy Finder
@@ -201,7 +214,7 @@ let g:netrw_localrmdir='rm -r' " Use this command to delete stuff
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
-nmap <silent> <SPACE>cc :CocDiagnostics<CR>
+nmap <silent> <SPACE>cc <Plug>(coc-diagnostic-enable)
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
@@ -265,6 +278,12 @@ nnoremap <C-L> :%s/
 
 lua << EOF
 
+-- Git signs
+
+require('gitsigns').setup()
+
+-- Comment plugin
+
 require('Comment').setup()
 
 -- Telescope
@@ -282,6 +301,8 @@ require("telescope").setup({
 })
 
 -- Treesitter
+require'treesitter-context'.setup()
+
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
   ensure_installed = { "c", "lua", "rust", "javascript", "python", "typescript", "vue", "css" },
