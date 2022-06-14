@@ -2,27 +2,20 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'jpalardy/vim-slime'
-" Plug 'mhinz/vim-signify'
+Plug 'rebelot/kanagawa.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'rakr/vim-one'
-Plug 'romainl/Apprentice'
 Plug 'morhetz/gruvbox'
 Plug 'connorholyday/vim-snazzy'
 Plug 'dracula/vim'
 Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ray-x/lsp_signature.nvim'
-" Plug 'junegunn/fzf'
-" Plug 'junegunn/fzf.vim'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'junegunn/seoul256.vim'
-" Plug 'wellle/context.vim'
-" Plug 'tomtom/tcomment_vim'
-" Plug 'tpope/vim-commentary'
-" Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'numToStr/Comment.nvim'
 Plug 'tomtom/tlib_vim'
 Plug 'markonm/traces.vim'
@@ -90,7 +83,7 @@ set signcolumn=yes             " Always show the sign column (avoids jarring eff
 " A good set of defaults for all languages
 set expandtab shiftwidth=4 tabstop=4 softtabstop=4
 
-colo apprentice
+colo kanagawa
 set bg=light
 hi MatchParen ctermbg=blue guibg=lightblue
 
@@ -212,9 +205,9 @@ let g:netrw_localrmdir='rm -r' " Use this command to delete stuff
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> <SPACE><SPACE> :call CocAction('diagnosticToggle')<CR>
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
-nmap <silent> <SPACE>cc <Plug>(coc-diagnostic-enable)
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
