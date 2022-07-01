@@ -227,7 +227,7 @@ endfunction
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
-nmap <leader>rn <Plug>(coc-rename)
+nmap <silent> gn <Plug>(coc-rename)
 
 function! FloatScroll(forward) abort
   let float = coc#util#get_float()
