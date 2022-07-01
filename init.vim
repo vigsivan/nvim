@@ -12,7 +12,11 @@ Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-treesitter/nvim-treesitter-context'
+" Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'liuchengxu/vista.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'mbbill/undotree'
+Plug 'catppuccin/nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'junegunn/seoul256.vim'
@@ -77,14 +81,14 @@ set termguicolors              " Needed to make the colorschemes work
 set undofile                   " Persistent undo
 set cmdheight=2                " More space for displaying messages
 set updatetime=300             " decrease lag
-set shortmess+=c               "Don't pass messages to |ins-completion-menu|. 
+set shortmess+=c               " Don't pass messages to |ins-completion-menu|. 
 set signcolumn=yes             " Always show the sign column (avoids jarring effect)
 
 " A good set of defaults for all languages
 set expandtab shiftwidth=4 tabstop=4 softtabstop=4
 
 colo kanagawa
-set bg=light
+set bg=dark
 hi MatchParen ctermbg=blue guibg=lightblue
 
 let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
@@ -92,7 +96,7 @@ let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/k
 let mapleader="<SPACE>"
 let $RTP='/Users/vigsivan/.config/vim/.vim/' " Set vim config path
 " let g:context_enabled = 1
-let g:do_filetype_lua = 1  " Detect filetype in Lua
+let g:do_filetype_lua = 1  " Detect filetype in Lua (faster)
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -123,33 +127,13 @@ nnoremap <silent> <SPACE>qq :call ToggleQuickFix()<cr>
 nnoremap <silent> <SPACE>qh :cc<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
-" Version Control
+" Status Line
 
-nnoremap <silent> <SPACE>g <nop>
-" nnoremap <silent> <SPACE>gs :SignifyToggle<cr>
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
 
-""""""""""""""""""""""""""""""""""""""""""""""""""
-" Fuzzy Finder
-
-" function! RipgrepFzf(query, fullscreen)
-"   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-"   let initial_command = printf(command_fmt, shellescape(a:query))
-"   let reload_command = printf(command_fmt, '{q}')
-"   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-"   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-" endfunction
-"
-" command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
-" nnoremap <SPACE>. :Files<CR>
-"
-" nnoremap <SPACE>f <nop>
-" nnoremap <SPACE>h <nop>
-"
-" nnoremap <SPACE>ff :GitFiles<CR>
-" nnoremap <SPACE>fh :History<CR>
-" nnoremap <SPACE>fg :RG<CR>
-" nnoremap <SPACE>hh :Helptags<CR>
-" nnoremap <SPACE>b :Bufferes<CR>
+" set statusline=%f%m%r%h\ [%L]\ %{NearestMethodOrFunction()}
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Telescope (Slower but prettier than FZF)
@@ -161,6 +145,7 @@ nnoremap <SPACE>. <cmd>Telescope find_files<cr>
 nnoremap <SPACE>ff <cmd>Telescope find_files<cr>
 nnoremap <SPACE>fg <cmd>Telescope live_grep<cr>
 nnoremap <SPACE>fb <cmd>Telescope buffers<cr>
+nnoremap <SPACE>b <cmd>Telescope buffers<cr>
 nnoremap <SPACE>fh <cmd>Telescope help_tags<cr>
 
 " Using Lua functions
@@ -294,7 +279,7 @@ require("telescope").setup({
 })
 
 -- Treesitter
-require'treesitter-context'.setup()
+-- require'treesitter-context'.setup()
 
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
