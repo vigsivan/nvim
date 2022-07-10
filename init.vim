@@ -246,10 +246,7 @@ endfunction
 inoremap <silent><expr> <down> coc#util#has_float() ? FloatScroll(1) : "\<down>"
 inoremap <silent><expr>  <up>  coc#util#has_float() ? FloatScroll(0) :  "\<up>"
 
-""""""""""""""""""""""""""""""""""""""""""""""""""
-" Miscellaneous keybindings
-
-nnoremap <C-L> :%s/
+nnoremap <C-L> :CocList symbols<CR> 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Configure Lua plugins
