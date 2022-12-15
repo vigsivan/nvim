@@ -46,6 +46,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'ionide/Ionide-vim'
 Plug 'kevinhwang91/promise-async'
 Plug 'kevinhwang91/nvim-ufo'
+Plug 'tpope/vim-fugitive'
 
 call plug#end()
 
