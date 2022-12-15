@@ -84,7 +84,7 @@ set termguicolors              " Needed to make the colorschemes work
 set undofile                   " Persistent undo
 set cmdheight=2                " More space for displaying messages
 set updatetime=300             " decrease lag
-set shortmess+=c               "Don't pass messages to |ins-completion-menu|. 
+set shortmess+=c               " Don't pass messages to |ins-completion-menu|. 
 set signcolumn=yes             " Always show the sign column (avoids jarring effect)
 
 " A good set of defaults for all languages
@@ -100,7 +100,7 @@ let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/k
 let mapleader="<SPACE>"
 let $RTP='/Users/vigsivan/.config/vim/.vim/' " Set vim config path
 " let g:context_enabled = 1
-let g:do_filetype_lua = 1  " Detect filetype in Lua
+let g:do_filetype_lua = 1  " Detect filetype in Lua (faster)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Open mini terminal
@@ -282,8 +282,6 @@ inoremap <silent><expr> <down> coc#util#has_float() ? FloatScroll(1) : "\<down>"
 inoremap <silent><expr>  <up>  coc#util#has_float() ? FloatScroll(0) :  "\<up>"
 
 nnoremap <C-L> :CocList symbols<CR>
-
-
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Configure Lua plugins
 
