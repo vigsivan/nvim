@@ -14,10 +14,8 @@ Plug 'dracula/vim'
 Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ray-x/lsp_signature.nvim'
-Plug 'metakirby5/codi.vim'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'metakirby5/codi.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'numToStr/Comment.nvim'
 Plug 'tomtom/tlib_vim'
@@ -156,7 +154,7 @@ nnoremap <silent> <SPACE>qq :call ToggleQuickFix()<cr>
 nnoremap <silent> <SPACE>qh :cc<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
-" Version Control
+" Status Line
 
 nnoremap <silent> <SPACE>g <nop>
 " nnoremap <silent> <SPACE>gs :SignifyToggle<cr>
