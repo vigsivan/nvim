@@ -1,5 +1,7 @@
 {
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "diagnostic.virtualTextCurrentLineOnly": false,
     "diagnostic.enableSign": false,
-    "diagnostic.virtualText": true
+    "diagnostic.virtualText": true,
+    "clangd.path": "~/.config/coc/extensions/coc-clangd-data/install/15.0.6/clangd_15.0.6/bin/clangd"
 }

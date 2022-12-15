@@ -1,6 +1,9 @@
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.nvim/plugged')
+Plug 'mbbill/undotree'
 Plug 'junegunn/vim-easy-align'
 Plug 'AndrewRadev/sideways.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'jpalardy/vim-slime'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'lewis6991/gitsigns.nvim'
@@ -11,10 +14,10 @@ Plug 'dracula/vim'
 Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ray-x/lsp_signature.nvim'
+Plug 'metakirby5/codi.vim'
 Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'metakirby5/codi.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'numToStr/Comment.nvim'
 Plug 'tomtom/tlib_vim'
@@ -39,7 +42,10 @@ Plug 'fladson/vim-kitty'
 Plug 'liuchengxu/vista.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'projekt0n/github-nvim-theme'
+Plug 'joshdick/onedark.vim'
 Plug 'ionide/Ionide-vim'
+Plug 'kevinhwang91/promise-async'
+Plug 'kevinhwang91/nvim-ufo'
 
 call plug#end()
 
@@ -82,9 +88,10 @@ set signcolumn=yes             " Always show the sign column (avoids jarring eff
 
 " A good set of defaults for all languages
 set expandtab shiftwidth=4 tabstop=4 softtabstop=4
+let g:codi#log="/Users/vigsivan/codi.log"
 
 colo kanagawa
-set bg=light
+set bg=dark
 hi MatchParen ctermbg=blue guibg=lightblue
 
 let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
@@ -94,7 +101,32 @@ let $RTP='/Users/vigsivan/.config/vim/.vim/' " Set vim config path
 " let g:context_enabled = 1
 let g:do_filetype_lua = 1  " Detect filetype in Lua
 
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Open mini terminal
 
+let g:term_buf = 0
+let g:term_win = 0
+function! TermToggle(height)
+    if win_gotoid(g:term_win)
+        hide
+    else
+        botright new
+        exec "resize " . a:height
+        try
+            exec "buffer " . g:term_buf
+        catch
+            call termopen($SHELL, {"detach": 0})
+            let g:term_buf = bufnr("")
+            set nonumber
+            set norelativenumber
+            set signcolumn=no
+        endtry
+        let g:term_win = win_getid()
+    endif
+endfunction
+
+nnoremap <SPACE>' :call TermToggle(12)<CR>
+tnoremap <SPACE>' :call TermToggle(12)<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Easy Align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -131,43 +163,30 @@ nnoremap <silent> <SPACE>g <nop>
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Fuzzy Finder
 
-" function! RipgrepFzf(query, fullscreen)
-"   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-"   let initial_command = printf(command_fmt, shellescape(a:query))
-"   let reload_command = printf(command_fmt, '{q}')
-"   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-"   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-" endfunction
-"
-" command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
-" nnoremap <SPACE>. :Files<CR>
-"
-" nnoremap <SPACE>f <nop>
-" nnoremap <SPACE>h <nop>
-"
-" nnoremap <SPACE>ff :GitFiles<CR>
-" nnoremap <SPACE>fh :History<CR>
-" nnoremap <SPACE>fg :RG<CR>
-" nnoremap <SPACE>hh :Helptags<CR>
-" nnoremap <SPACE>b :Bufferes<CR>
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
 
-""""""""""""""""""""""""""""""""""""""""""""""""""
-" Telescope (Slower but prettier than FZF)
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+nnoremap <SPACE>. :Files<CR>
 
 nnoremap <SPACE>f <nop>
-nnoremap <SPACE>. <cmd>Telescope find_files<cr>
+nnoremap <SPACE>h <nop>
 
-" Find files using Telescope command-line sugar.
-nnoremap <SPACE>ff <cmd>Telescope find_files<cr>
-nnoremap <SPACE>fg <cmd>Telescope live_grep<cr>
-nnoremap <SPACE>fb <cmd>Telescope buffers<cr>
-nnoremap <SPACE>fh <cmd>Telescope help_tags<cr>
+nnoremap <SPACE>ff :GitFiles<CR>
+nnoremap <SPACE>fh :History<CR>
+nnoremap <SPACE>fg :RG<CR>
+nnoremap <SPACE>hh :Helptags<CR>
+nnoremap <SPACE>b :Buffers<CR>
 
-" Using Lua functions
-nnoremap <SPACE>fh <cmd>lua require('telescope.builtin').oldfiles()<cr>
-nnoremap <SPACE>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap <SPACE>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <SPACE>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+if has("nvim")
+  au TermOpen * tnoremap <Esc> <c-\><c-n>
+  au FileType fzf tunmap <Esc>
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " traces
@@ -202,7 +221,7 @@ let g:netrw_localrmdir='rm -r' " Use this command to delete stuff
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Coc
-
+"
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> <SPACE><SPACE> :call CocAction('diagnosticToggle')<CR>
@@ -227,7 +246,7 @@ endfunction
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
-nmap <leader>rn <Plug>(coc-rename)
+nnoremap <silent>gn <Plug>(coc-rename)
 
 function! FloatScroll(forward) abort
   let float = coc#util#get_float()
@@ -261,10 +280,8 @@ endfunction
 inoremap <silent><expr> <down> coc#util#has_float() ? FloatScroll(1) : "\<down>"
 inoremap <silent><expr>  <up>  coc#util#has_float() ? FloatScroll(0) :  "\<up>"
 
-""""""""""""""""""""""""""""""""""""""""""""""""""
-" Miscellaneous keybindings
+nnoremap <C-L> :CocList symbols<CR>
 
-nnoremap <C-L> :%s/
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Configure Lua plugins
@@ -273,29 +290,26 @@ lua << EOF
 
 -- Git signs
 
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+
 require('gitsigns').setup()
 
 -- Comment plugin
 
 require('Comment').setup()
 
--- Telescope
 
-local actions = require("telescope.actions")
-
-require("telescope").setup({
-    defaults = {
-        mappings = {
-            i = {
-                ["<esc>"] = actions.close,
-            },
-        },
-    },
-})
+-- Lualine plugin
+-- require('lualine').setup()
 
 -- Treesitter
-require'treesitter-context'.setup()
-
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
   ensure_installed = { "c", "lua", "rust", "javascript", "python", "typescript", "vue", "css" },
