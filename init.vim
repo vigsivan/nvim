@@ -1,16 +1,16 @@
 call plug#begin('~/.nvim/plugged')
+Plug 'github/copilot.vim'
+Plug 'ziglang/zig.vim'
+Plug 'dkarter/bullets.vim'
+Plug 'lervag/vimtex'
 Plug 'mbbill/undotree'
 Plug 'junegunn/vim-easy-align'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'jpalardy/vim-slime'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'lewis6991/gitsigns.nvim'
 Plug 'rakr/vim-one'
-Plug 'morhetz/gruvbox'
-Plug 'connorholyday/vim-snazzy'
-Plug 'dracula/vim'
 Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ray-x/lsp_signature.nvim'
@@ -29,13 +29,15 @@ Plug 'dag/vim-fish'
 Plug 'romainl/vim-qf'
 Plug 'tpope/vim-repeat'
 Plug 'airblade/vim-rooter'
-Plug 'connorholyday/vim-snazzy'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-Plug 'vim-python/python-syntax'
-Plug 'kana/vim-textobj-user'
-Plug 'bps/vim-textobj-python'
+" Plug 'vim-python/python-syntax'
+" Plug 'kana/vim-textobj-user'
+" Plug 'bps/vim-textobj-python'
+Plug 'rktjmp/lush.nvim'
+Plug 'adisen99/apprentice.nvim'
+Plug 'jeetsukumaran/vim-pythonsense'
 Plug 'fladson/vim-kitty'
 Plug 'liuchengxu/vista.vim'
 Plug 'rust-lang/rust.vim'
@@ -57,7 +59,7 @@ filetype plugin on             " Load ftplugins
 set wildmenu                   " Show options for Ex commands
 " set nocompatible
 set backspace=indent,eol,start " Backspace over everything
-set clipboard=unnamed          " Use system keyboard
+set clipboard+=unnamedplus     " Use system keyboard
 set incsearch                  " Incremental search
 set hidden                     " Keep persistent terminal
 set hlsearch                   " Stop highlighting searches
@@ -89,16 +91,46 @@ set signcolumn=yes             " Always show the sign column (avoids jarring eff
 set expandtab shiftwidth=4 tabstop=4 softtabstop=4
 let g:codi#log="/Users/vigsivan/codi.log"
 
-colo kanagawa
+colo seoul256
 set bg=dark
 hi MatchParen ctermbg=blue guibg=lightblue
 
 let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
-" nnoremap <SPACE> <nop>
+
 let mapleader="<SPACE>"
 let $RTP='/Users/vigsivan/.config/vim/.vim/' " Set vim config path
 " let g:context_enabled = 1
 let g:do_filetype_lua = 1  " Detect filetype in Lua (faster)
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Makefiles
+autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Apprentice
+let g:apprentice_contrast_light = "medium"
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Markdown
+let g:bullets_enabled_file_types = ['markdown']
+
+
+" Tex
+
+" Viewer options: One may configure the viewer either by specifying a built-in
+" viewer method:
+let g:vimtex_view_method = 'zathura'
+
+" VimTeX uses latexmk as the default compiler backend. If you use it, which is
+" strongly recommended, you probably don't need to configure anything. If you
+" want another compiler backend, you can change it as follows. The list of
+" supported backends and further explanation is provided in the documentation,
+" see ":help vimtex-compiler".
+let g:vimtex_compiler_method = 'latexrun'
+
+" Most VimTeX mappings rely on localleader and this can be changed with the
+" following line. The default is usually fine and is the symbol "\".
+let maplocalleader = ","
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Open mini terminal
@@ -155,7 +187,6 @@ nnoremap <silent> <SPACE>qh :cc<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Status Line
-
 nnoremap <silent> <SPACE>g <nop>
 " nnoremap <silent> <SPACE>gs :SignifyToggle<cr>
 
@@ -194,7 +225,10 @@ let g:traces_abolish_integration = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Slime
 let g:slime_python_ipython = 1
-let g:slime_target = "neovim"
+let g:slime_target = "kitty"
+
+let g:slime_cell_delimiter = "#%%"
+nmap <SPACE>s <Plug>SlimeSendCell
 
 nnoremap <C-c>j :SlimeSendCurrentLine<CR>j
 nnoremap <C-c>} <C-c><C-c>}
@@ -204,11 +238,6 @@ nnoremap <C-c>i gg/import<C-c><C-c>
 " Sideways
 nnoremap ]s :SidewaysRight<CR>
 nnoremap [s :SidewaysLeft<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""
-" Highlight Python
-
-let g:python_highlight_all = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " rooter
@@ -242,6 +271,8 @@ function! s:show_documentation()
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
+
+set rtp^="/home/vigsivan/.opam/default/share/ocp-indent/vim"
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -280,6 +311,7 @@ inoremap <silent><expr> <down> coc#util#has_float() ? FloatScroll(1) : "\<down>"
 inoremap <silent><expr>  <up>  coc#util#has_float() ? FloatScroll(0) :  "\<up>"
 
 nnoremap <C-L> :CocList symbols<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Configure Lua plugins
 
@@ -306,10 +338,19 @@ require('Comment').setup()
 -- Lualine plugin
 -- require('lualine').setup()
 
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+  group = highlight_group,
+  pattern = '*',
+})
+
 -- Treesitter
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "lua", "rust", "javascript", "python", "typescript", "vue", "css" },
+  ensure_installed = { "c", "ocaml", "lua", "rust", "javascript", "python", "typescript", "css", "markdown" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -325,7 +366,7 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    -- disable = { "c", "rust" },
+    disable = { 'latex' },
 
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
