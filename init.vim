@@ -1,6 +1,5 @@
 call plug#begin('~/.nvim/plugged')
 Plug 'github/copilot.vim'
-Plug 'ziglang/zig.vim'
 Plug 'dkarter/bullets.vim'
 Plug 'lervag/vimtex'
 Plug 'mbbill/undotree'
@@ -9,12 +8,12 @@ Plug 'AndrewRadev/sideways.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'rebelot/kanagawa.nvim'
-Plug 'lewis6991/gitsigns.nvim'
+" Plug 'lewis6991/gitsigns.nvim'
 Plug 'rakr/vim-one'
 Plug 'Konfekt/FastFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ray-x/lsp_signature.nvim'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', { 'commit': 'aa02427dfeaead86fae038024ae7b29299f08b8c', 'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'junegunn/seoul256.vim'
 Plug 'numToStr/Comment.nvim'
@@ -43,9 +42,9 @@ Plug 'liuchengxu/vista.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'projekt0n/github-nvim-theme'
 Plug 'joshdick/onedark.vim'
-Plug 'ionide/Ionide-vim'
+Plug 'ionide/Ionide-vim', { 'commit': '00099c3cf53cba28a1d8084ab8d21639c62bd747'}
 Plug 'kevinhwang91/promise-async'
-Plug 'kevinhwang91/nvim-ufo'
+Plug 'kevinhwang91/nvim-ufo', { 'commit': '65dda6360879f6ffe0278163b9192a573a0d2a08'}
 Plug 'tpope/vim-fugitive'
 
 call plug#end()
@@ -91,11 +90,11 @@ set signcolumn=yes             " Always show the sign column (avoids jarring eff
 set expandtab shiftwidth=4 tabstop=4 softtabstop=4
 let g:codi#log="/Users/vigsivan/codi.log"
 
-colo seoul256
 set bg=dark
+colo kanagawa-dragon
 hi MatchParen ctermbg=blue guibg=lightblue
 
-let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
+" let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
 
 let mapleader="<SPACE>"
 let $RTP='/Users/vigsivan/.config/vim/.vim/' " Set vim config path
@@ -328,7 +327,7 @@ vim.o.foldenable = true
 vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
 vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
 
-require('gitsigns').setup()
+-- require('gitsigns').setup()
 
 -- Comment plugin
 

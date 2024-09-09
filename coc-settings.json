@@ -3,5 +3,13 @@
     "diagnostic.virtualTextCurrentLineOnly": false,
     "diagnostic.enableSign": false,
     "diagnostic.virtualText": true,
-    "clangd.path": "~/.config/coc/extensions/coc-clangd-data/install/15.0.6/clangd_15.0.6/bin/clangd"
+    "inlayHint.enable": false,
+    "clangd.path": "~/.config/coc/extensions/coc-clangd-data/install/18.1.3/clangd_18.1.3/bin/clangd",
+    "languageserver": {
+      "ocaml-lsp": {
+        "command": "opam",
+        "args": ["config", "exec", "--", "ocamllsp"],
+        "filetypes": ["ocaml", "reason"]
+      }
+    }
 }
