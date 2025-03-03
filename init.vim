@@ -31,9 +31,11 @@ Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-rhubarb'
 " Plug 'vim-python/python-syntax'
 " Plug 'kana/vim-textobj-user'
 " Plug 'bps/vim-textobj-python'
+Plug 'NoahTheDuke/vim-just'
 Plug 'rktjmp/lush.nvim'
 Plug 'adisen99/apprentice.nvim'
 Plug 'jeetsukumaran/vim-pythonsense'
@@ -91,7 +93,7 @@ set expandtab shiftwidth=4 tabstop=4 softtabstop=4
 let g:codi#log="/Users/vigsivan/codi.log"
 
 set bg=dark
-colo kanagawa-dragon
+colo github_dark
 hi MatchParen ctermbg=blue guibg=lightblue
 
 " let &t_ut=''      " Background erase workaround (see https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim)
@@ -112,6 +114,14 @@ let g:apprentice_contrast_light = "medium"
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " Markdown
 let g:bullets_enabled_file_types = ['markdown']
+
+""""""""""""""""""""""""""""""""""""""""""""""""""
+" Copy github lines
+nnoremap <silent> gy :.GBrowse!<CR>
+xnoremap <silent> gy :'<'>GBrowse!<CR>
+nnoremap <silent> gB :.GBrowse<CR>
+
+""
 
 
 " Tex
@@ -257,7 +267,6 @@ nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
